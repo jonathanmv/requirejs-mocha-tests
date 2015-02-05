@@ -47,5 +47,74 @@ define(['queryInterpreter'], function (QueryInterpreter) {
       }
     });
 
+    it('should interpret phrases with operators like > and numbers in the form of 10k', function () {
+      var sentences = [
+        { natural: 'likes more than 3k', interpreted: 'likes>3000' },
+        { natural: 'percentageOfLikes more than 0.706', interpreted: 'percentageOfLikes>0.706' },
+        { natural: 'with more than 0.34 percentageOfLikes', interpreted: 'with percentageOfLikes>0.34' },
+        { natural: 'with more than 3k likes', interpreted: 'with likes>3000' },
+        {
+          natural: 'with more than 3k likes and less than 1500 pageReach',
+          interpreted: 'with likes>3000,pageReach<1500'
+        },
+        {
+          natural: 'with more than 3k likes in "United States"',
+          interpreted: 'with likes>3000,country:"United States"'
+        },
+        {
+          natural: 'with more than 3k likes in "United States" and country.pageReach more than 1k',
+          interpreted: 'with likes>3000,country:"United States",country.pageReach>1000'
+        }
+      ],
+        i = 0,
+        l = sentences.length,
+        sentence,
+        interpretation;
+
+      for (; i < l; i++) {
+        sentence = sentences[i];
+        interpretation = interpreter.translate(sentence.natural);
+        interpretation.should.equal(sentence.interpreted);
+      }
+    });
+
+    it('should replace facebook, youtube, website or twitter to type:"facebook"', function () {
+      var sentences = [
+        { natural: 'facebook with more than 3k likes', interpreted: 'type:"facebook" with likes>3000' },
+        {
+          natural: 'facebook twitter youtube website ignored',
+          interpreted: 'type:"facebook" type:"twitter" type:"youtube" type:"website" ignored'
+        }
+      ],
+        i = 0,
+        l = sentences.length,
+        sentence,
+        interpretation;
+
+      for (; i < l; i++) {
+        sentence = sentences[i];
+        interpretation = interpreter.translate(sentence.natural);
+        interpretation.should.equal(sentence.interpreted);
+      }
+    });
+
+    it('should find numeric filters in query', function () {
+      var testQuery = 'with likes>3000,country:"United States",country.pageReach>1000,percentageOfLikes>0.45',
+        expectedNumericFilters = [
+          'likes>3000',
+          'country.pageReach>1000',
+          'percentageOfLikes>0.45'
+        ],
+        actualNumericFilters,
+        i = 0,
+        l = expectedNumericFilters.length;
+
+        actualNumericFilters = interpreter.findNumericFilters(testQuery);
+        actualNumericFilters.length.should.be.equal(l);
+
+        for (; i < l; i++) {
+          actualNumericFilters[i].should.be.equal(expectedNumericFilters[i]);
+        }
+    });
   })
 });
