@@ -21,21 +21,23 @@ define(function () {
       // TODO Try to merge previous and next regular expressions into a single one
       [/\s(\d+)M(?=\s)*/gi, ' $1000000'],
       // with {numericField} {operator} {value}
-      [/(with|and)\s([><])\s(\d+(\.\d+)*)\s(\w+)/gi, '$1 $5$2$3'],
+      [/(with|and)\s([><])\s(\d+(\.\d+)*)\s(\w+(\.\w+)*)/gi, '$1 $5$2$3'],
       // and is replaced by ,
       [/\s(and)\s/gi, ','],
       // in is replaced by ,country:
-      [/\s(in)\s/gi, ',country:'],
+      [/\s*(in)\s/gi, ',country:'],
       // a > b to a>b
-      [/(\w+)\s([><])\s(\d+)/gi, '$1$2$3'],
+      [/(\w+)\s([><])\s(\d+)/gi, '$1$2$3']
       // facebook to type="facebook"
-      [/(facebook|twitter|youtube|website)/gi, 'type:"$1"']
+        // Commented because this functionality is not required at the moment
+      //[/(facebook|twitter|youtube|website)/gi, 'type:"$1"']
     ],
 
     // patterns to find queries between strings
     patterns: {
       // numeric a>b
-      fieldOperatorNumber: /(\w+(\.\w+)*)[><](\d+(\.\d+)*)/gi
+      fieldOperatorNumber: /(\w+(\.\w+)*)[><](\d+(\.\d+)*)/gi,
+      fieldText: /(\w+):"(\w+\s*\w*)"/gi
     },
 
     translate: function (text) {
@@ -49,6 +51,14 @@ define(function () {
 
     findNumericFilters: function (text) {
       return text.match(this.patterns.fieldOperatorNumber);
+    },
+
+    findTextFilters: function (text) {
+      var matches = text.match(this.patterns.fieldText);
+      // matches containes items in the form of country:"country" but those " need to be removed
+      return matches.map(function (match) {
+        return match.replace(/"/gi, '');
+      });
     }
   };
 

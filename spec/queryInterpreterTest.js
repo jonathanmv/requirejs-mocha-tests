@@ -50,6 +50,8 @@ define(['queryInterpreter'], function (QueryInterpreter) {
     it('should interpret phrases with operators like > and numbers in the form of 10k', function () {
       var sentences = [
         { natural: 'likes more than 3k', interpreted: 'likes>3000' },
+        { natural: 'facebook.likes more than 3k', interpreted: 'facebook.likes>3000' },
+        { natural: 'with more than 45k facebook.likes', interpreted: 'with facebook.likes>45000' },
         { natural: 'percentageOfLikes more than 0.706', interpreted: 'percentageOfLikes>0.706' },
         { natural: 'with more than 0.34 percentageOfLikes', interpreted: 'with percentageOfLikes>0.34' },
         { natural: 'with more than 3k likes', interpreted: 'with likes>3000' },
@@ -78,7 +80,7 @@ define(['queryInterpreter'], function (QueryInterpreter) {
       }
     });
 
-    it('should replace facebook, youtube, website or twitter to type:"facebook"', function () {
+    it.skip('should replace facebook, youtube, website or twitter to type:"facebook"', function () {
       var sentences = [
         { natural: 'facebook with more than 3k likes', interpreted: 'type:"facebook" with likes>3000' },
         {
@@ -99,9 +101,9 @@ define(['queryInterpreter'], function (QueryInterpreter) {
     });
 
     it('should find numeric filters in query', function () {
-      var testQuery = 'with likes>3000,country:"United States",country.pageReach>1000,percentageOfLikes>0.45',
+      var testQuery = 'with facebook.likes>3000,country:"United States",country.pageReach>1000,percentageOfLikes>0.45',
         expectedNumericFilters = [
-          'likes>3000',
+          'facebook.likes>3000',
           'country.pageReach>1000',
           'percentageOfLikes>0.45'
         ],
@@ -114,6 +116,23 @@ define(['queryInterpreter'], function (QueryInterpreter) {
 
         for (; i < l; i++) {
           actualNumericFilters[i].should.be.equal(expectedNumericFilters[i]);
+        }
+    });
+
+    it('should find text filters in query', function () {
+      var testQuery = 'with facebook.likes>3000,country:"United States",country.pageReach>1000,percentageOfLikes>0.45',
+        expectedTextFilters = [
+          'country:United States'
+        ],
+        actualTextFilters,
+        i = 0,
+        l = expectedTextFilters.length;
+
+        actualTextFilters = interpreter.findTextFilters(testQuery);
+        actualTextFilters.length.should.be.equal(l);
+
+        for (; i < l; i++) {
+          actualTextFilters[i].should.be.equal(expectedTextFilters[i]);
         }
     });
   })
