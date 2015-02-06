@@ -135,5 +135,25 @@ define(['queryInterpreter'], function (QueryInterpreter) {
           actualTextFilters[i].should.be.equal(expectedTextFilters[i]);
         }
     });
+
+    it('should find field in the form of likes on facebook', function () {
+      var sentences = [
+        { natural: 'with more than 3k likes on facebook', interpreted: 'with facebook_likes>3000' },
+        {
+          natural: 'likes on facebook followers on twitter videos on youtube visits on website ignored',
+          interpreted: 'facebook_likes twitter_followers youtube_videos website_visits ignored'
+        }
+      ],
+        i = 0,
+        l = sentences.length,
+        sentence,
+        interpretation;
+
+      for (; i < l; i++) {
+        sentence = sentences[i];
+        interpretation = interpreter.translate(sentence.natural);
+        interpretation.should.equal(sentence.interpreted);
+      }
+    });
   })
 });

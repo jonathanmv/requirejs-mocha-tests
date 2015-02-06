@@ -12,6 +12,8 @@ define(function () {
 
     // tranlations to convert natural language to a more query like languege
     translations: [
+      // likes on facebook to facebook_likes
+      [/(\w+)\son\s(facebook|twitter|youtube|website)/gi, '$2_$1'],
       // operators like > <
       [/less than/gi, '<'],
       [/more than/gi, '>'],
