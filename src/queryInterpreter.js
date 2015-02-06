@@ -54,7 +54,7 @@ define(function () {
     },
 
     findTextFilters: function (text) {
-      var matches = text.match(this.patterns.fieldText);
+      var matches = text.match(this.patterns.fieldText) || [];
       // matches containes items in the form of country:"country" but those " need to be removed
       return matches.map(function (match) {
         return match.replace(/"/gi, '');
