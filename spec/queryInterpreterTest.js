@@ -160,7 +160,7 @@ define(['queryInterpreter'], function (QueryInterpreter) {
     });
 
     it('should find text query', function () {
-      var expectedQuery = 'keywordOne keywordTwo',
+      var expectedQuery = 'keywordOne keywordTwo keywordN',
         testQuery = 'contains "' + expectedQuery + '"',
         actualQuery;
 

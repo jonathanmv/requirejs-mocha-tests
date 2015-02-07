@@ -42,7 +42,7 @@ define(function () {
       // numeric a>b
       numericFilter: /(\w+(\.\w+)*)[><](\d+(\.\d+)*)/gi,
       facetFilter: /(\w+):"(\w+\s*\w*)"/gi,
-      query: /contains "(\w+)\s*(\w*)"/
+      query: /contains "(.*)"/
     },
 
     translate: function (text) {
@@ -68,7 +68,7 @@ define(function () {
 
     findQuery: function (text) {
       var matches = text.match(this.patterns.query) || [],
-        query = matches.length > 1 ? matches.splice(1).join(' ') : '';
+        query = matches.length > 1 ? matches[1] : '';
 
       return query;
     }
