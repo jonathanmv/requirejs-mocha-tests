@@ -40,8 +40,9 @@ define(function () {
     // patterns to find queries between strings
     patterns: {
       // numeric a>b
-      fieldOperatorNumber: /(\w+(\.\w+)*)[><](\d+(\.\d+)*)/gi,
-      fieldText: /(\w+):"(\w+\s*\w*)"/gi
+      numericFilter: /(\w+(\.\w+)*)[><](\d+(\.\d+)*)/gi,
+      facetFilter: /(\w+):"(\w+\s*\w*)"/gi,
+      query: /contains "(\w+)\s*(\w*)"/
     },
 
     translate: function (text) {
@@ -54,15 +55,22 @@ define(function () {
     },
 
     findNumericFilters: function (text) {
-      return text.match(this.patterns.fieldOperatorNumber);
+      return text.match(this.patterns.numericFilter);
     },
 
     findTextFilters: function (text) {
-      var matches = text.match(this.patterns.fieldText) || [];
+      var matches = text.match(this.patterns.facetFilter) || [];
       // matches containes items in the form of country:"country" but those " need to be removed
       return matches.map(function (match) {
         return match.replace(/"/gi, '');
       });
+    },
+
+    findQuery: function (text) {
+      var matches = text.match(this.patterns.query) || [],
+        query = matches.length > 1 ? matches.splice(1).join(' ') : '';
+
+      return query;
     }
   };
 

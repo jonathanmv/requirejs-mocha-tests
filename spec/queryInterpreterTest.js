@@ -122,7 +122,7 @@ define(['queryInterpreter'], function (QueryInterpreter) {
         }
     });
 
-    it('should find text filters in query', function () {
+    it('should find facet filters in query', function () {
       var testQuery = 'with facebook.likes>3000,country:"United States",country.pageReach>1000,percentageOfLikes>0.45',
         expectedTextFilters = [
           'country:United States'
@@ -157,6 +157,15 @@ define(['queryInterpreter'], function (QueryInterpreter) {
         interpretation = interpreter.translate(sentence.natural);
         interpretation.should.equal(sentence.interpreted);
       }
+    });
+
+    it('should find text query', function () {
+      var expectedQuery = 'keywordOne keywordTwo',
+        testQuery = 'contains "' + expectedQuery + '"',
+        actualQuery;
+
+        actualQuery = interpreter.findQuery(testQuery);
+        actualQuery.should.be.equal(expectedQuery);
     });
   })
 });
