@@ -24,6 +24,8 @@ define(function () {
       [/\s(\d+)M(?=\s)*/gi, ' $1000000'],
       // with {numericField} {operator} {value}
       [/(with|and)\s([><])\s(\d+(\.\d+)*)\s(\w+(\.\w+)*)/gi, '$1 $5$2$3'],
+      // {operator} {value} {numericField}
+      [/([><])\s(\d+(\.\d+)*)\s(\w+(\.\w+)*)/gi, '$4$1$2'],
       // and is replaced by ,
       [/\s(and)\s/gi, ','],
       // in is replaced by ,country:

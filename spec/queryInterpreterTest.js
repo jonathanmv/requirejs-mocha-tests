@@ -55,6 +55,9 @@ define(['queryInterpreter'], function (QueryInterpreter) {
         { natural: 'percentageOfLikes more than 0.706', interpreted: 'percentageOfLikes>0.706' },
         { natural: 'with more than 0.34 percentageOfLikes', interpreted: 'with percentageOfLikes>0.34' },
         { natural: 'with more than 3k likes', interpreted: 'with likes>3000' },
+        { natural: 'more than 3k likes', interpreted: 'likes>3000' },
+        { natural: 'less than 35.9 percentageOfLikes', interpreted: 'percentageOfLikes<35.9' },
+        { natural: 'less than 35.9 percentage.likes', interpreted: 'percentage.likes<35.9' },
         {
           natural: 'with more than 3k likes and less than 1500 pageReach',
           interpreted: 'with likes>3000,pageReach<1500'
